@@ -18,7 +18,7 @@
 ## GitHub Project
 
 ### Project URL
-**[https://github.com/LondheShubham153/django-notes-app.git](https://github.com/LondheShubham153/django-notes-app.git)**: This is the URL of the GitHub repository containing the Django application code. Jenkins will pull the code from this repository to build and deploy.
+**[https://github.com/username/project-name.git](https://github.com/username/project-name.git)**: This is the URL of the GitHub repository containing the Django application code. Jenkins will pull the code from this repository to build and deploy.
 
 ## Advanced
 
