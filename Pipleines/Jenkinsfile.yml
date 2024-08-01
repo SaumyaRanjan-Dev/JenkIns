@@ -1,0 +1,44 @@
+pipeline:
+  agent: any
+
+  environment:
+    DOCKER_REGISTRY: 'your-docker-registry'
+    APP_IMAGE: 'your-webapp-image'
+    DB_IMAGE: 'your-database-image'
+
+  stages:
+    - stage: 'Checkout'
+      steps:
+        - script: |
+            git clone https://github.com/your-repository.git .
+
+    - stage: 'Build'
+      steps:
+        - script: |
+            docker build -t ${DOCKER_REGISTRY}/${APP_IMAGE}:latest ./webapp
+            docker build -t ${DOCKER_REGISTRY}/${DB_IMAGE}:latest ./database
+
+    - stage: 'Push'
+      steps:
+        - script: |
+            docker push ${DOCKER_REGISTRY}/${APP_IMAGE}:latest
+            docker push ${DOCKER_REGISTRY}/${DB_IMAGE}:latest
+
+    - stage: 'Deploy'
+      steps:
+        - script: |
+            docker pull ${DOCKER_REGISTRY}/${APP_IMAGE}:latest
+            docker pull ${DOCKER_REGISTRY}/${DB_IMAGE}:latest
+
+            docker run -d --name mydatabase \
+              -e POSTGRES_USER=myuser \
+              -e POSTGRES_PASSWORD=mypassword \
+              -e POSTGRES_DB=mydb \
+              ${DOCKER_REGISTRY}/${DB_IMAGE}:latest
+
+            docker run -d --name mywebapp \
+              --link mydatabase:db \
+              -p 80:80 \
+              ${DOCKER_REGISTRY}/${APP_IMAGE}:latest
+
+ 
